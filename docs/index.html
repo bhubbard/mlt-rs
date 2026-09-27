@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mlt-rs | High-Performance Non-Linear Video Editing Engine in Pure Rust</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-badge">MLT</span>
+        <span class="logo-title">mlt-rs</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#timeline">Timeline Studio</a>
+        <a href="#xml-inspector">MLT XML</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="https://github.com/bhubbard/mlt-rs" target="_blank" class="github-btn">
+          <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+          </svg>
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero">
+      <div class="hero-badge">🎬 Pure Rust Port of the Media Lovin' Toolkit (MLT)</div>
+      <h1 class="hero-title">High-Performance Non-Linear Video Editing in Pure Rust</h1>
+      <p class="hero-subtitle">
+        Memory-safe reimplementation of the multimedia framework powering Shotcut and Kdenlive. 
+        Multi-track tractor compositing, crossfade transitions, frame-accurate animation interpolation, and native MLT XML interchange.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Memory-Safe Pure Rust</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Frame-Accurate</div>
+          <div class="stat-label">Multi-Track Compositing</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Shotcut & Kdenlive</div>
+          <div class="stat-label">MLT XML Round-Trip Support</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">0 Pointer Bugs</div>
+          <div class="stat-label">Zero Memory Corruption</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Multi-Track Timeline Studio -->
+    <section id="timeline" class="section">
+      <div class="section-header">
+        <span class="section-tag">Interactive NLE Surface</span>
+        <h2>Multi-Track Tractor Timeline Studio</h2>
+        <p>Drag the playhead across tracks, toggle mute/solo, and inspect real-time alpha compositing and dissolve transitions.</p>
+      </div>
+
+      <div class="timeline-card">
+        <div class="timeline-controls">
+          <div class="transport-bar">
+            <button id="play-btn" class="transport-btn">▶ Play</button>
+            <button id="step-back-btn" class="transport-btn">⏮</button>
+            <button id="step-fwd-btn" class="transport-btn">⏭</button>
+            <span class="timecode-display" id="timecode-display">00:00:01:15</span>
+          </div>
+
+          <div class="timeline-meta">
+            <span>Profile: <strong>HD 1080p 30 fps</strong></span>
+            <span>Total Duration: <strong>120 Frames (4.0s)</strong></span>
+          </div>
+        </div>
+
+        <div class="preview-container">
+          <div class="video-monitor" id="video-monitor">
+            <div class="monitor-layer" id="monitor-content"></div>
+            <div class="monitor-hud">
+              <span id="hud-frame">Frame: 45 / 120</span>
+              <span id="hud-res">1920x1080 RGBA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Track Rulers & Tracks -->
+        <div class="tracks-wrapper">
+          <div class="playhead-line" id="playhead-line"></div>
+
+          <!-- Track V2 -->
+          <div class="track-row">
+            <div class="track-header">
+              <span class="track-title">V2: Overlay</span>
+              <div class="track-toggles">
+                <button class="track-btn active" id="v2-vis">👁</button>
+              </div>
+            </div>
+            <div class="track-lane">
+              <div class="clip-block v2-clip" style="left: 25%; width: 50%;">
+                <span>Title Overlay (Alpha Blend)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Track V1 -->
+          <div class="track-row">
+            <div class="track-header">
+              <span class="track-title">V1: Video</span>
+              <div class="track-toggles">
+                <button class="track-btn active" id="v1-vis">👁</button>
+              </div>
+            </div>
+            <div class="track-lane">
+              <div class="clip-block v1-a" style="left: 0%; width: 55%;">
+                <span>Interview_Camera_A.mp4</span>
+              </div>
+              <div class="transition-pill" style="left: 45%; width: 15%;">
+                <span>Cross Dissolve</span>
+              </div>
+              <div class="clip-block v1-b" style="left: 50%; width: 50%;">
+                <span>B-Roll_Landscape.mp4</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Track A1 -->
+          <div class="track-row">
+            <div class="track-header">
+              <span class="track-title">A1: Audio</span>
+              <div class="track-toggles">
+                <button class="track-btn active" id="a1-vis">🔊</button>
+              </div>
+            </div>
+            <div class="track-lane">
+              <div class="clip-block a1-clip" style="left: 0%; width: 100%;">
+                <span>Dialog Audio (48kHz Stereo)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <input type="range" id="timeline-slider" min="0" max="119" value="45" class="scrub-slider">
+      </div>
+    </section>
+
+    <!-- XML Inspector -->
+    <section id="xml-inspector" class="section">
+      <div class="section-header">
+        <span class="section-tag">Interchange Schema</span>
+        <h2>Shotcut & Kdenlive MLT XML Inspector</h2>
+        <p>Pure Rust serialization of the official MLT XML grammar.</p>
+      </div>
+
+      <div class="xml-card">
+        <div class="xml-header">
+          <span>Project Document: timeline_export.mlt</span>
+          <button id="copy-xml-btn" class="copy-btn">📋 Copy XML</button>
+        </div>
+        <pre><code id="xml-display" class="xml-code"></code></pre>
+      </div>
+    </section>
+
+    <!-- Quickstart -->
+    <section id="quickstart" class="section">
+      <div class="section-header">
+        <span class="section-tag">Developer Guide</span>
+        <h2>Rust SDK & melt CLI Quickstart</h2>
+      </div>
+
+      <div class="code-grid">
+        <div class="code-card">
+          <div class="code-header">CLI Usage (melt)</div>
+          <pre><code><span class="comment"># Play an MLT project file</span>
+melt project.mlt --profile hd1080p30
+
+<span class="comment"># Render multi-track project to destination</span>
+melt project.mlt -consumer render_output.mp4
+
+<span class="comment"># Generate color clip on vertical TikTok profile</span>
+melt color:red --profile vertical --out 90</code></pre>
+        </div>
+
+        <div class="code-card">
+          <div class="code-header">Rust Programmatic API</div>
+          <pre><code><span class="keyword">use</span> mlt_rs::{Tractor, Playlist, ClipProducer, Profile, DissolveTransition, TractorTransition};
+
+<span class="keyword">fn</span> <span class="fn">main</span>() -> <span class="keyword">anyhow</span>::Result&lt;()&gt; {
+    <span class="keyword">let</span> profile = Profile::hd_1080_30p();
+    <span class="keyword">let mut</span> tractor = Tractor::new(<span class="string">"timeline"</span>);
+
+    <span class="keyword">let mut</span> track0 = Playlist::new(<span class="string">"v1"</span>);
+    track0.append(Box::new(ClipProducer::new(<span class="string">"c1"</span>, <span class="string">"shot1.mp4"</span>, 0, 59)), 0, 59);
+
+    tractor.add_track(track0);
+    <span class="keyword">let</span> frame = tractor.get_frame(15, &amp;profile)?;
+    <span class="macro">println!</span>(<span class="string">"Composited frame size: {}x{}"</span>, frame.width, frame.height);
+    <span class="prelude-val">Ok</span>(())
+}</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>© 2026 Brandon Hubbard. Built with pure Rust. Inspired by MLT Multimedia Framework (mltframework/mlt). MIT / Apache-2.0 License.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

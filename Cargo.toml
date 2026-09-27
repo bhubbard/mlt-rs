@@ -1,8 +1,32 @@
 [package]
 name = "mlt-rs"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
-description = "Modern, safe Rust non-linear multimedia authoring framework inspired by MLT"
+authors = ["Brandon Hubbard <brandon@brandonhubbard.com>"]
+description = "High-performance, memory-safe non-linear video editing engine and melt CLI inspired by MLT framework in pure Rust"
 license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/bhubbard/mlt-rs"
+homepage = "http://code.brandonhubbard.com/mlt-rs/"
+
+[[bin]]
+name = "melt"
+path = "src/bin/main.rs"
+
+[lib]
+name = "mlt_rs"
+path = "src/lib.rs"
 
 [dependencies]
+clap = { version = "4.5", features = ["derive", "cargo"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+quick-xml = { version = "0.37", features = ["serialize"] }
+thiserror = "2.0"
+anyhow = "1.0"
+indicatif = "0.17"
+uuid = { version = "1.10", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+[dev-dependencies]
+tempfile = "3.12"
